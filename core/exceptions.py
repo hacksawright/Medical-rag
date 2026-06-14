@@ -15,3 +15,11 @@ class VectorStoreError(MedicalRAGException):
 class LLMGenerationError(MedicalRAGException):
     """Lỗi khi gọi API sinh văn bản của LLM Providers"""
     pass
+
+class BM25RetrieverError(MedicalRAGException):
+    """Lỗi liên quan đến BM25 sparse search và quản lý index"""
+    pass
+
+class HybridRetrieverError(MedicalRAGException):
+    """Lỗi xảy ra trong quá trình kết hợp kết quả truy vấn Dense + Sparse"""
+    pass

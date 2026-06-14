@@ -21,6 +21,16 @@ class Settings(BaseSettings):
     CHROMA_DB_DIR: str = str(Path(__file__).resolve().parent.parent / "data" / "chromadb")
     CHROMA_COLLECTION_NAME: str = "medical_knowledge_vi"
     
+    # BM25 Sparse Search Settings
+    BM25_INDEX_DIR: str = str(Path(__file__).resolve().parent.parent / "data" / "bm25")
+    BM25_INDEX_PATH: str = str(Path(__file__).resolve().parent.parent / "data" / "bm25" / "bm25_index.pkl")
+    
+    # Hybrid Retrieval & Fusion Settings
+    RETRIEVAL_TOP_K: int = 4
+    DENSE_TOP_K: int = 10
+    SPARSE_TOP_K: int = 10
+    RRF_K: int = 60
+    
     # Embedding Model Settings
     EMBEDDING_MODEL_NAME: str = "BAAI/bge-m3" 
     EMBEDDING_DEVICE: str = "cuda" if os.environ.get("USE_CUDA") == "true" else "cpu"
@@ -36,3 +46,4 @@ class Settings(BaseSettings):
     QWEN_MODEL_NAME: str = "qwen-max"
 
 settings = Settings()
+

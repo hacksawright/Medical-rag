@@ -46,3 +46,12 @@ if __name__ == "__main__":
     
     # Bạn có thể test thêm các câu khác để xem độ nhạy của Vector Space
     # test_search("Biến chứng nguy hiểm của đái tháo đường")
+
+# import os
+# import sys
+# import uuid
+# import logging
+# from pathlib import Path
+# from core.config import settings
+
+# print(settings.CHROMA_DB_DIR)

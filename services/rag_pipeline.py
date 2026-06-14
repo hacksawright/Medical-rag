@@ -1,8 +1,9 @@
 import logging
 import time
-from domain.interfaces import ILanguageDetector, ITranslator, IEmbeddingService, IVectorStore, ILLMService
+from domain.interfaces import ILanguageDetector, ITranslator, IRetriever, ILLMService
 from domain.models import ChatRequest, ChatResponse, SourceCitation
 from core.exceptions import MedicalRAGException
+from core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -11,16 +12,14 @@ class MedicalRAGPipeline:
         self,
         language_detector: ILanguageDetector,
         translator: ITranslator,
-        embedding_service: IEmbeddingService,
-        vector_store: IVectorStore,
+        retriever: IRetriever,
         llm_service: ILLMService,
         system_prompt_template: str,
         system_prompt_template_en: str = None
     ):
         self.language_detector = language_detector
         self.translator = translator
-        self.embedding_service = embedding_service
-        self.vector_store = vector_store
+        self.retriever = retriever
         self.llm_service = llm_service
         self.system_prompt_template = system_prompt_template
         self.system_prompt_template_en = system_prompt_template_en
@@ -39,9 +38,8 @@ class MedicalRAGPipeline:
             translated_query = self.translator.translate_en_to_vi(original_query)
             processed_query = translated_query
             
-        # 3. Tạo Vector và Truy vấn ChromaDB
-        query_vector = self.embedding_service.embed_query(processed_query)
-        matched_chunks = self.vector_store.query_similar_documents(query_vector, top_k=4)
+        # 3. Tìm kiếm ngữ cảnh bằng Hybrid Retrieval (Dense + Sparse)
+        matched_chunks = self.retriever.retrieve(processed_query, top_k=settings.RETRIEVAL_TOP_K)
         
         # 4. Xử lý Metadata linh hoạt từ cấu trúc Markdown
         context_str = ""

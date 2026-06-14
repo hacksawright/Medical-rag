@@ -92,11 +92,19 @@ def run_markdown_ingestion(file_name: str):
     logger.info(f"Nạp thành công {len(all_texts)} dữ liệu Markdown y tế vào ChromaDB!")
 
 if __name__ == "__main__":
-    # Thay tên file .md y tế bạn đã chuẩn bị sẵn ở đây
-    # Ví dụ: file data/raw/benh_tieu_duong.md
-    folder_path = os.path.join("..\data", "raw", "cúm")
+    folder_path = os.path.join("data", "raw", "cúm")
 
     for file_name in os.listdir(folder_path):
         if file_name.endswith(".md"):
-            relative_path = os.path.join("..\data", "raw", "cúm", file_name)
+            relative_path = os.path.join("data", "raw", "cúm", file_name)
             run_markdown_ingestion(relative_path)
+            
+    # Tái thiết lập và đồng bộ chỉ mục BM25
+    logger.info("Đang tiến hành tái cấu trúc chỉ mục BM25 sau khi hoàn tất nạp tài liệu...")
+    from infrastructure.vectorstore import ChromaVectorStore
+    from infrastructure.retrievers import BM25Retriever
+    
+    vs = ChromaVectorStore()
+    bm25_ret = BM25Retriever(vector_store=vs)
+    bm25_ret.rebuild_index()
+    logger.info("Hoàn tất đồng bộ chỉ mục BM25 thành công!")

@@ -36,6 +36,17 @@ class IVectorStore(ABC):
         """Nạp dữ liệu văn bản kèm vectors vào kho lưu trữ"""
         pass
 
+    @abstractmethod
+    def get_all_documents(self) -> List[MedicalDocumentChunk]:
+        """Lấy toàn bộ tài liệu hiện có trong vector store"""
+        pass
+
+class IRetriever(ABC):
+    @abstractmethod
+    def retrieve(self, query: str, top_k: int) -> List[MedicalDocumentChunk]:
+        """Tìm kiếm các đoạn tài liệu phù hợp cho câu hỏi truy vấn"""
+        pass
+
 class ILLMService(ABC):
     @abstractmethod
     def generate_answer(self, system_prompt: str, user_prompt: str) -> str:

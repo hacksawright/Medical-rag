@@ -11,3 +11,4 @@ google-generativeai==0.5.4
 torch==2.3.0
 numpy==1.26.4
 langchain-text-splitters
+rank-bm25==0.2.2

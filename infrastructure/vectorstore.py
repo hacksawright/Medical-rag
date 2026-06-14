@@ -62,3 +62,22 @@ class ChromaVectorStore(IVectorStore):
         except Exception as e:
             logger.error(f"Lỗi khi thêm tài liệu vào ChromaDB: {str(e)}")
             raise VectorStoreError(f"Ghi tài liệu y tế thất bại: {str(e)}")
+
+    def get_all_documents(self) -> List[MedicalDocumentChunk]:
+        try:
+            results = self.collection.get(include=["documents", "metadatas"])
+            chunks = []
+            if not results or not results['ids']:
+                return chunks
+                
+            for i in range(len(results['ids'])):
+                chunks.append(MedicalDocumentChunk(
+                    id=results['ids'][i],
+                    text=results['documents'][i] if results['documents'] else "",
+                    metadata=results['metadatas'][i] if results['metadatas'] else {},
+                    score=None
+                ))
+            return chunks
+        except Exception as e:
+            logger.error(f"Lỗi khi lấy toàn bộ tài liệu từ ChromaDB: {str(e)}")
+            raise VectorStoreError(f"Không thể truy xuất toàn bộ tài liệu y tế: {str(e)}")
